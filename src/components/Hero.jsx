@@ -2,10 +2,10 @@ import React from 'react';
 
 const Hero = () => {
   return (
-    <div className="min-h-screen bg-[#1A2641] flex items-center justify-center  py-[7vw]">
+    <div className="min-h-screen bg-[#1A2641] flex items-center justify-center py-[6rem]  md:py-[7vw]">
       <div className="my-container w-full">
         {/* Main Hero Card */}
-        <div className="bg-[#FFFFFF] rounded-3xl p-8 md:p-12 relative overflow-hidden">
+        <div className="bg-[#FFFFFF] rounded-3xl p-8  md:p-12 relative overflow-hidden">
           {/* Speech Bubble Tail */}
           
           {/* Content Container */}

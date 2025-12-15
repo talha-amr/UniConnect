@@ -93,7 +93,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center pt-[8vw] pb-[2vw]">
+    <div className="min-h-screen bg-white flex items-center justify-center pt-[6rem] md:pt-[8vw] pb-[2vw]">
       <div className="my-container w-full">
         <div className="max-w-2xl mx-auto">
           {/* Header */}

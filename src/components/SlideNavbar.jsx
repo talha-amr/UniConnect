@@ -3,12 +3,25 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, Settings, LogOut, Menu, X } from 'lucide-react';
 
 const SlideNavbar = ({ children }) => {
-    const [isOpen, setIsOpen] = useState(true);
+    // Default to closed on mobile, open on desktop
+    const [isOpen, setIsOpen] = useState(window.innerWidth >= 768);
     const location = useLocation();
+
+    // Handle window resize
+    React.useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 768) setIsOpen(false);
+            else setIsOpen(true);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+
+    // ... existing navigation logic ...
 
     const navigate = useNavigate();
     const handleLogout = () => {
@@ -25,7 +38,7 @@ const SlideNavbar = ({ children }) => {
           fixed top-0 left-0 z-40 h-screen bg-white shadow-xl transition-transform duration-300 ease-in-out
           flex flex-col border-r border-gray-100
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          w-64
+          w-full md:w-64
         `}
             >
                 {/* Header / Logo Area */}
@@ -41,9 +54,9 @@ const SlideNavbar = ({ children }) => {
                         </div>
                     </div>
 
-                    {/* Close button for mobile (optional) */}
+                    {/* Close button for mobile */}
                     <button onClick={toggleSidebar} className="md:hidden text-gray-500 hover:text-gray-800">
-                        <X size={20} />
+                        <X size={24} />
                     </button>
                 </div>
 
@@ -57,13 +70,6 @@ const SlideNavbar = ({ children }) => {
                             return (
                                 <>
                                     <NavItem to="/staff" icon={<LayoutDashboard size={20} />} label="Dashboard" active={location.pathname === '/staff'} />
-                                    {/* Assuming Assigned Complaints route, or just reusing complaints/assigned page if you have one. 
-                                        The user requested 'Assigned Complaints'. I'll point to a placeholder or existing route if known. 
-                                        For now, maybe /staff/complaints/assigned or similar if implemented. 
-                                        Let's assume a generic route for now or just 'complaints' if shared. 
-                                        Actually, let's use /staff/assigned based on typical naming. or reuse /student-complaints if shared? 
-                                        No, user said 'assigned complaints'. taking a guess at /staff/assigned-complaints 
-                                    */}
                                     <NavItem to="/staff/assigned-complaints" icon={<FileText size={20} />} label="Assigned Complaints" active={location.pathname === '/staff/assigned-complaints'} />
                                     <NavItem to="/settings" icon={<Settings size={20} />} label="Settings" active={location.pathname === '/settings'} />
                                 </>
@@ -98,10 +104,10 @@ const SlideNavbar = ({ children }) => {
             <main
                 className={`
           flex-1 transition-all duration-300 ease-in-out p-8 overflow-y-auto
-          ${isOpen ? 'ml-64' : 'ml-0'}
+          ${isOpen ? 'md:ml-64' : ''}
         `}
             >
-                {/* Toggle Button (Visible only when sidebar is closed or on mobile) */}
+                {/* Toggle Button */}
                 <div className="mb-8">
                     <button
                         onClick={toggleSidebar}
