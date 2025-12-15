@@ -54,27 +54,12 @@ npm run seed
 ```
 
 ## 5. Run the Application
-You need to run both the backend and frontend servers.
-
-**Option A: Single Command (Recommended for Windows)**
-Run this from the **root** folder:
+Simply run this command from the **root** folder:
 ```bash
-npm start
-# If that doesn't work, try:
-start cmd /k "cd backend && npm start" && npm run dev
+npm run dev
 ```
+This will automatically start both the Backend (port 5000) and Frontend (port 5173).
 
-**Option B: Two Terminals**
-*   **Terminal 1 (Backend):**
-    ```bash
-    cd backend
-    npm start
-    ```
-*   **Terminal 2 (Frontend - Root):**
-    ```bash
-    npm run dev
-    ```
-
-## Troubleshooting
+Troubleshooting:
 *   **Database Error?** Check if MySQL service is running and your `.env` username/password are correct.
 *   **White Screen?** Check the console (F12) for errors. Ensure the backend is running on port 5000.
