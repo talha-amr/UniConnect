@@ -41,17 +41,24 @@ const AdminDash = () => {
         const total = complaints.length;
 
         // Status: solved (Resolved), unsolved (Pending), in progress (In Progress)
-        // Note: doughnut labels are ["Solved", "Unsolved", "In Progress"]
-        const solved = complaints.filter(c => c.status === 'Resolved').length;
-        const unsolved = complaints.filter(c => c.status === 'Pending').length;
-        const inProgress = complaints.filter(c => c.status === 'In Progress').length;
+        const solved = complaints.filter(c => (c.Status || c.status) === 'Resolved').length;
+        const unsolved = complaints.filter(c => (c.Status || c.status) === 'Pending').length;
+        const inProgress = complaints.filter(c => (c.Status || c.status) === 'In Progress').length;
 
         // Category: ["IT Dept", "Maintenance Dept", "Academic Affairs", "Security"]
-        // DB Categories: 'IT', 'Maintenance', 'Academics', 'Security'
-        const it = complaints.filter(c => c.category === 'IT').length;
-        const maint = complaints.filter(c => c.category === 'Maintenance').length;
-        const acad = complaints.filter(c => c.category === 'Academics').length;
-        const sec = complaints.filter(c => c.category === 'Security').length;
+        // Access nested category name safely. Handle potential array if association was hasMany.
+        const getCatName = (c) => {
+          if (!c.Category) return '';
+          const catNameVal = c.Category.CategoryName || c.Category.CategoryNames;
+          // If it's an array (old hasMany), take first. If object (new hasOne), take direct.
+          const obj = Array.isArray(catNameVal) ? catNameVal[0] : catNameVal;
+          return obj?.Category_name || '';
+        };
+
+        const it = complaints.filter(c => getCatName(c) === 'IT').length;
+        const maint = complaints.filter(c => getCatName(c) === 'Maintenance').length;
+        const acad = complaints.filter(c => getCatName(c) === 'Academic').length;
+        const sec = complaints.filter(c => getCatName(c) === 'Security').length;
 
         setStats({
           total,
@@ -201,7 +208,7 @@ const AdminDash = () => {
     datasets: [
       {
         label: "Complaints",
-        data: stats.categoryCounts.length === 4 ? stats.categoryCounts : [20, 35, 25, -15, 15, 50], // Fallback if data doesn't match
+        data: stats.categoryCounts, // Use dynamic data
         backgroundColor: "#2C3E89",
       },
     ],

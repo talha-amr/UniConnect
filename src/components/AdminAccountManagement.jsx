@@ -24,12 +24,17 @@ const AdminAccountManagement = () => {
     if (window.confirm('Are you sure you want to delete this account?')) {
       try {
         await api.delete(`/users/${id}?type=${type}`);
-        // Refresh list
-        fetchUsers();
-        // Or filter locally: setAccounts(prev => prev.filter(acc => acc.id !== id));
+        // Remove locally
+        setAccounts(prev => prev.filter(acc => acc.id !== id));
       } catch (error) {
-        console.error('Error deleting user:', error);
-        alert('Failed to delete user');
+        // If 404, it means it's already deleted or doesn't exist. We should still remove it from view.
+        if (error.response && error.response.status === 404) {
+          setAccounts(prev => prev.filter(acc => acc.id !== id));
+          alert('User was not found (might have already been deleted). List updated.');
+        } else {
+          console.error('Error deleting user:', error);
+          alert('Failed to delete user');
+        }
       }
     }
   };
@@ -80,7 +85,11 @@ const AdminAccountManagement = () => {
 
               {/* Created Date */}
               <p className="text-sm text-gray-600 mb-2">
-                Account Created on {new Date(account.createdDate).toLocaleDateString()}
+                Account Created on {(() => {
+                  if (!account.createdDate) return 'Unknown';
+                  const d = new Date(account.createdDate);
+                  return isNaN(d.getTime()) ? 'Unknown Date' : d.toLocaleDateString();
+                })()}
               </p>
 
               {/* Status Message */}

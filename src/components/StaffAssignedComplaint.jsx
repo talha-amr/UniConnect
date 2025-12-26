@@ -3,12 +3,13 @@ import { Search, X, MoreHorizontal, Eye } from 'lucide-react';
 
 import api from '../api/axios';
 
-const StaffAssignedComplaint = ({ complaints, loading }) => {
+const StaffAssignedComplaint = ({ complaints, loading, onRefresh }) => {
 
     // Safety check just in case
     const safeComplaints = complaints || [];
     const [selectedComplaint, setSelectedComplaint] = useState(null);
     const [newStatus, setNewStatus] = useState('Pending');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const handleActionClick = (complaint) => {
         setSelectedComplaint(complaint);
@@ -19,9 +20,12 @@ const StaffAssignedComplaint = ({ complaints, loading }) => {
         if (!selectedComplaint) return;
         try {
             await api.patch(`/complaints/${selectedComplaint.Complaint_ID}/status`, { status: newStatus });
-            alert("Status Updated Successfully");
             setSelectedComplaint(null);
-            window.location.reload(); // Simple refresh to see changes
+            setShowSuccessModal(true); // Show success modal
+
+            // Refresh Data Immediately
+            if (onRefresh) onRefresh();
+
         } catch (error) {
             console.error("Update failed", error);
             alert("Update Failed");
@@ -184,6 +188,29 @@ const StaffAssignedComplaint = ({ complaints, loading }) => {
                                 <button onClick={() => setSelectedComplaint(null)} className="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded">Cancel</button>
                                 <button onClick={handleUpdateSubmit} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Update</button>
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Success Modal */}
+                {showSuccessModal && (
+                    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[60]">
+                        <div className="bg-white p-6 rounded-lg w-96 shadow-xl text-center transform transition-all scale-100">
+                            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                                <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">Status Updated!</h3>
+                            <p className="text-sm text-gray-500 mb-6">
+                                The complaint status has been updated successfully.
+                            </p>
+                            <button
+                                onClick={() => setShowSuccessModal(false)}
+                                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:text-sm"
+                            >
+                                OK
+                            </button>
                         </div>
                     </div>
                 )}

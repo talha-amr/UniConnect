@@ -14,7 +14,7 @@ const getAllUsers = async (req, res) => {
             name: user.Name,
             email: user.Email,
             type: 'Student',
-            createdDate: user.Created_at,
+            createdDate: user.createdAt || user.created_at || new Date(),
             status: 'active',
             bgColor: 'bg-yellow-50',
             borderColor: 'border-yellow-200'
@@ -26,7 +26,7 @@ const getAllUsers = async (req, res) => {
             name: user.Name,
             email: user.Email,
             type: 'Staff',
-            createdDate: user.Created_at,
+            createdDate: user.createdAt || user.created_at || new Date(),
             status: 'active',
             bgColor: 'bg-blue-50',
             borderColor: 'border-blue-200'

@@ -11,6 +11,7 @@ const AdminComplaint = () => {
   const [selectedStaffId, setSelectedStaffId] = useState('');
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -31,6 +32,14 @@ const AdminComplaint = () => {
     }
   };
 
+  // Helper to safely get department name
+  const getDeptName = (c) => {
+    if (!c.Category) return null;
+    const catNameVal = c.Category.CategoryName || c.Category.CategoryNames;
+    const obj = Array.isArray(catNameVal) ? catNameVal[0] : catNameVal;
+    return obj?.Category_name;
+  };
+
   const handleAssignClick = (complaintId) => {
     setSelectedComplaintId(complaintId);
     setShowAssignModal(true);
@@ -45,8 +54,8 @@ const AdminComplaint = () => {
     if (!selectedStaffId) return alert("Select a department");
     try {
       await api.post(`/complaints/assign/${selectedComplaintId}`, { categoryId: selectedStaffId });
-      alert("Assigned to department successfully");
       setShowAssignModal(false);
+      setShowSuccessModal(true); // Show success modal
       fetchData();
     } catch (error) {
       console.error("Assign failed", error);
@@ -83,7 +92,7 @@ const AdminComplaint = () => {
                   <td className="px-6 py-4">{c.student ? c.student.Name : 'N/A'}</td>
                   <td className="px-6 py-4 font-medium text-gray-900">{c.Title}</td>
                   <td className="px-6 py-4">
-                    {c.Category?.CategoryNames?.[0]?.Category_name || <span className="text-gray-400 italic">Unassigned</span>}
+                    {getDeptName(c) || <span className="text-gray-400 italic">Unassigned</span>}
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded text-xs ${c.Status === 'Resolved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
@@ -95,9 +104,9 @@ const AdminComplaint = () => {
                     <button
                       onClick={() => handleAssignClick(c.Complaint_ID)}
                       className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
-                      title="Assign to Staff"
+                      title={getDeptName(c) ? "Re-assign Department" : "Assign Department"}
                     >
-                      <UserPlus size={16} /> {c.Category ? 'Re-assign' : 'Assign'}
+                      <UserPlus size={16} /> {getDeptName(c) ? 'Re-assign' : 'Assign'}
                     </button>
                     <button
                       onClick={() => handleViewClick(c)}
@@ -165,7 +174,7 @@ const AdminComplaint = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Department</label>
-                <p className="text-gray-900">{selectedComplaint.Category?.CategoryNames?.[0]?.Category_name || 'Unassigned'}</p>
+                <p className="text-gray-900">{getDeptName(selectedComplaint) || 'Unassigned'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Status</label>
@@ -202,9 +211,32 @@ const AdminComplaint = () => {
           </div>
         </div>
       )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-96 shadow-xl text-center transform transition-all scale-100">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+              <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">Assigned Successfully!</h3>
+            <p className="text-sm text-gray-500 mb-6">
+              The complaint has been assigned to the department.
+            </p>
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:text-sm"
+              style={{ cursor: 'pointer' }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-
 
 export default AdminComplaint;

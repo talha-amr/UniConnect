@@ -8,6 +8,7 @@ const StudentComplaints = () => {
     const [filteredComplaints, setFilteredComplaints] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     // Fetch complaints on load
     const fetchComplaints = async () => {
@@ -37,7 +38,7 @@ const StudentComplaints = () => {
     const handleLodgeComplaint = async (formData) => {
         try {
             await api.post('/complaints', formData);
-            alert("Complaint Submitted Successfully!");
+            setShowSuccessModal(true); // Show success modal instead of alert
             fetchComplaints();
         } catch (error) {
             console.error("Failed to submit complaint", error);
@@ -152,6 +153,29 @@ const StudentComplaints = () => {
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleLodgeComplaint}
             />
+
+            {/* Success Modal */}
+            {showSuccessModal && (
+                <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[60]">
+                    <div className="bg-white p-6 rounded-lg w-96 shadow-xl text-center transform transition-all scale-100">
+                        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                            <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">Complaint Submitted!</h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                            Your complaint has been successfully lodged.
+                        </p>
+                        <button
+                            onClick={() => setShowSuccessModal(false)}
+                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:text-sm"
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -7,24 +7,29 @@ const StaffAssignedComplaintPage = () => {
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchComplaints = async () => {
-            try {
-                const res = await api.get('/complaints/assigned');
-                setComplaints(res.data);
-            } catch (error) {
-                console.error("Failed to fetch assigned complaints", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchComplaints = async () => {
+        setLoading(true);
+        try {
+            const res = await api.get('/complaints/assigned');
+            setComplaints(res.data);
+        } catch (error) {
+            console.error("Failed to fetch assigned complaints", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchComplaints();
     }, []);
 
     return (
         <SlideNavbar>
-            <StaffAssignedComplaint complaints={complaints} loading={loading} />
+            <StaffAssignedComplaint
+                complaints={complaints}
+                loading={loading}
+                onRefresh={fetchComplaints}
+            />
         </SlideNavbar>
     );
 };
