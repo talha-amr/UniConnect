@@ -18,7 +18,7 @@ const StaffAssignedComplaint = ({ complaints, loading }) => {
     const handleUpdateSubmit = async () => {
         if (!selectedComplaint) return;
         try {
-            await api.patch(`/ complaints / ${selectedComplaint.Complaint_ID}/status`, { status: newStatus });
+            await api.patch(`/complaints/${selectedComplaint.Complaint_ID}/status`, { status: newStatus });
             alert("Status Updated Successfully");
             setSelectedComplaint(null);
             window.location.reload(); // Simple refresh to see changes

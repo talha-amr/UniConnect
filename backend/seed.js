@@ -69,29 +69,29 @@ const seedDatabase = async () => {
 
         // Create Complaints
         await Complaint.create({
-            title: 'WiFi Issues in Hostel A',
-            description: 'The wifi connection is dropping every 5 minutes.',
-            status: 'Pending',
-            is_anonymous: false,
+            Title: 'WiFi Issues in Hostel A',
+            Description: 'The wifi connection is dropping every 5 minutes.',
+            Status: 'Pending',
+            Is_anonymous: false,
             Student_ID: student1.Student_ID,
             Category_ID: categoryMap['IT']
         });
 
         await Complaint.create({
-            title: 'Broken Chair in Lab 3',
-            description: 'Seat back is broken.',
-            status: 'Resolved',
-            is_anonymous: true,
+            Title: 'Broken Chair in Lab 3',
+            Description: 'Seat back is broken.',
+            Status: 'Resolved',
+            Is_anonymous: true,
             Student_ID: student2.Student_ID,
             Category_ID: categoryMap['Maintenance']
         });
 
         // Add a resolved complaint for John to verify "Complaints Solved" stat
         await Complaint.create({
-            title: 'Projector not working',
-            description: 'Room 101 projector is dim.',
-            status: 'Resolved',
-            is_anonymous: false,
+            Title: 'Projector not working',
+            Description: 'Room 101 projector is dim.',
+            Status: 'Resolved',
+            Is_anonymous: false,
             Student_ID: student1.Student_ID,
             Category_ID: categoryMap['IT']
         });

@@ -9,6 +9,8 @@ const AdminComplaint = () => {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [selectedComplaintId, setSelectedComplaintId] = useState(null);
   const [selectedStaffId, setSelectedStaffId] = useState('');
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -32,6 +34,11 @@ const AdminComplaint = () => {
   const handleAssignClick = (complaintId) => {
     setSelectedComplaintId(complaintId);
     setShowAssignModal(true);
+  };
+
+  const handleViewClick = (complaint) => {
+    setSelectedComplaint(complaint);
+    setShowViewModal(true);
   };
 
   const handleAssignSubmit = async () => {
@@ -64,6 +71,7 @@ const AdminComplaint = () => {
                 <th className="px-6 py-4">ID</th>
                 <th className="px-6 py-4">Student</th>
                 <th className="px-6 py-4">Title</th>
+                <th className="px-6 py-4">Department</th>
                 <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
@@ -74,6 +82,9 @@ const AdminComplaint = () => {
                   <td className="px-6 py-4">#{c.Complaint_ID}</td>
                   <td className="px-6 py-4">{c.student ? c.student.Name : 'N/A'}</td>
                   <td className="px-6 py-4 font-medium text-gray-900">{c.Title}</td>
+                  <td className="px-6 py-4">
+                    {c.Category?.CategoryNames?.[0]?.Category_name || <span className="text-gray-400 italic">Unassigned</span>}
+                  </td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded text-xs ${c.Status === 'Resolved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                       }`}>
@@ -86,9 +97,13 @@ const AdminComplaint = () => {
                       className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
                       title="Assign to Staff"
                     >
-                      <UserPlus size={16} /> Assign
+                      <UserPlus size={16} /> {c.Category ? 'Re-assign' : 'Assign'}
                     </button>
-                    <button className="text-gray-400 hover:text-gray-600">
+                    <button
+                      onClick={() => handleViewClick(c)}
+                      className="text-gray-400 hover:text-gray-600"
+                      title="View Details"
+                    >
                       <Eye size={16} />
                     </button>
                   </td>
@@ -124,8 +139,72 @@ const AdminComplaint = () => {
           </div>
         </div>
       )}
+
+      {/* View Details Modal */}
+      {showViewModal && selectedComplaint && (
+        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-6 border-b pb-4">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800">Complaint Details</h3>
+                <span className="text-sm text-gray-500">#{selectedComplaint.Complaint_ID}</span>
+              </div>
+              <button onClick={() => setShowViewModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Student Name</label>
+                <p className="text-gray-900 font-medium">{selectedComplaint.student?.Name || 'N/A'}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Student Email</label>
+                <p className="text-gray-900">{selectedComplaint.student?.Email || 'N/A'}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Department</label>
+                <p className="text-gray-900">{selectedComplaint.Category?.CategoryNames?.[0]?.Category_name || 'Unassigned'}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Status</label>
+                <span className={`px-2 py-1 rounded text-xs ${selectedComplaint.Status === 'Resolved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                  {selectedComplaint.Status}
+                </span>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Date Logged</label>
+                <p className="text-gray-900">{new Date(selectedComplaint.Created_at).toLocaleString()}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Last Updated</label>
+                <p className="text-gray-900">{new Date(selectedComplaint.Updated_at).toLocaleString()}</p>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+              <p className="text-lg font-semibold text-gray-900 mb-2">{selectedComplaint.Title}</p>
+
+              <label className="block text-sm font-medium text-gray-700 mb-2 mt-4">Description</label>
+              <p className="text-gray-700 whitespace-pre-wrap">{selectedComplaint.Description}</p>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="px-6 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
 
 export default AdminComplaint;

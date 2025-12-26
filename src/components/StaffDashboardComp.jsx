@@ -5,10 +5,10 @@ const StaffDashboardComp = ({ user, complaints = [] }) => {
 
     // Calculate stats based on the complaints assigned
     // Assuming status strings: 'Resolved', 'Pending', 'In Progress'
-    const solvedCount = complaints.filter(c => c.status === 'Resolved' || c.status === 'Solved').length;
+    const solvedCount = complaints.filter(c => c.Status === 'Resolved' || c.Status === 'Solved').length;
     const assignedCount = complaints.length; // Total assigned
-    const pendingCount = complaints.filter(c => c.status === 'Pending').length;
-    const inProgressCount = complaints.filter(c => c.status === 'In Progress').length;
+    const pendingCount = complaints.filter(c => c.Status === 'Pending').length;
+    const inProgressCount = complaints.filter(c => c.Status === 'In Progress').length;
 
     return (
         <div className="bg-[#FFFDF7] min-h-screen p-8 font-sans text-gray-800">
@@ -22,7 +22,7 @@ const StaffDashboardComp = ({ user, complaints = [] }) => {
 
             {/* 2. Main Content: Single Large White Box */}
             <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm p-10 min-h-[600px]">
-                
+
                 <div className="space-y-12">
 
                     {/* Stat 1: Complaints Solved */}
@@ -49,8 +49,8 @@ const StaffDashboardComp = ({ user, complaints = [] }) => {
                         icon={<FileText size={28} className="text-orange-400" />}
                     />
 
-                     {/* Stat 4: In Progress Complaints */}
-                     <StatItem
+                    {/* Stat 4: In Progress Complaints */}
+                    <StatItem
                         label="In Progress Complaints"
                         count={inProgressCount}
                         // Description was missing in the screenshot for the last item, so I omitted it or kept it minimal
@@ -68,17 +68,17 @@ const StatItem = ({ label, count, description, icon }) => {
     return (
         <div className="flex flex-col items-start space-y-2">
             <h3 className="text-gray-400 text-lg font-normal">{label}</h3>
-            
+
             <div className="text-5xl md:text-6xl font-bold text-gray-900 leading-none tracking-tight">
                 {count}
             </div>
-            
+
             {description && (
                 <p className="text-xs text-gray-400 max-w-xs pb-1">
                     {description}
                 </p>
             )}
-            
+
             <div className="pt-1">
                 {icon}
             </div>
