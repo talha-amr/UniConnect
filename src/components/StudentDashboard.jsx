@@ -31,18 +31,17 @@ const DashboardHome = ({ user, complaints = [] }) => {
         <div className="bg-[#FFFDF7] min-h-screen p-8 font-sans text-gray-800">
 
             {/* Welcome Header */}
-            <div className="mb-12 mt-4 text-center">
-                <h1 className="text-3xl md:text-4xl font-normal text-gray-900 tracking-wide uppercase">
+            <div className="mb-8 sm:mb-12 mt-4 text-center">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-normal text-gray-900 tracking-wide uppercase">
                     Welcome {user ? user.Name : 'Student'}
                 </h1>
             </div>
 
-            <div className="max-w-5xl mx-auto space-y-8">
-
+            <div className="max-w-5xl mx-auto">
                 {/* "Lodge a Complaint" Action Card */}
                 <button
                     onClick={() => setIsModalOpen(true)} // 4. Open modal on click
-                    className="w-full bg-white border-2 border-orange-300 rounded-lg h-48 flex flex-col items-center justify-center hover:shadow-lg transition-shadow cursor-pointer group"
+                    className="w-full bg-white border-2 border-orange-300 rounded-lg h-32 sm:h-48 flex flex-col items-center justify-center hover:shadow-lg transition-shadow cursor-pointer group mb-8"
                 >
                     <span className="text-orange-400 text-lg font-medium mb-3 group-hover:text-orange-500 transition-colors">
                         Lodge a Complaint
@@ -55,7 +54,7 @@ const DashboardHome = ({ user, complaints = [] }) => {
                 </button>
 
                 {/* Stats Section */}
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                     {/* Stat Item 1: Complaints Solved */}
                     <StatItem
@@ -73,11 +72,6 @@ const DashboardHome = ({ user, complaints = [] }) => {
                         icon={<FilePlus size={28} className="text-orange-400" />}
                     />
 
-                    {/* Carousel Indicator Dot */}
-                    <div className="flex justify-center py-2">
-                        <div className="w-2 h-2 bg-black rounded-full"></div>
-                    </div>
-
                     {/* Stat Item 3: Pending Complaints */}
                     <StatItem
                         label="Pending Complaints"
@@ -86,6 +80,11 @@ const DashboardHome = ({ user, complaints = [] }) => {
                         icon={<FileText size={28} className="text-orange-400" />}
                     />
 
+                </div>
+
+                {/* Carousel Indicator Dot - Optional / can hide on desktop if not needed */}
+                <div className="flex justify-center py-6 md:hidden">
+                    <div className="w-2 h-2 bg-black rounded-full"></div>
                 </div>
             </div>
 

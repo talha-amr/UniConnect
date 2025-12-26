@@ -37,18 +37,18 @@ const StaffAssignedComplaint = ({ complaints, loading, onRefresh }) => {
 
             {/* 1. Top White Header Strip */}
             <div className="bg-white py-5 border-b border-gray-100 ">
-                <div className="max-w-7xl mx-auto px-8">
-                    <h1 className="text-3xl font-medium text-gray-900">Assigned Complaints</h1>
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
+                    <h1 className="text-2xl sm:text-3xl font-medium text-gray-900">Assigned Complaints</h1>
                 </div>
             </div>
 
             {/* Main Content Container */}
-            <div className="max-w-7xl mx-auto  pb-12 pt-8">
+            <div className="max-w-7xl mx-auto pb-12 pt-8 px-4 sm:px-8">
 
                 {/* 2. Page Title & Search Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900">
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                             Complaints Assigned
                         </h2>
                         <p className="text-gray-400 text-sm mt-1">
@@ -71,7 +71,7 @@ const StaffAssignedComplaint = ({ complaints, loading, onRefresh }) => {
                 <div className="bg-white rounded-xl border border-gray-200 min-h-[600px] flex flex-col">
 
                     {/* Filter Section */}
-                    <div className="px-8 py-6 border-b border-gray-200 flex flex-wrap items-center gap-3 bg-white rounded-t-xl">
+                    <div className="px-6 py-6 border-b border-gray-200 flex flex-wrap items-center gap-3 bg-white rounded-t-xl">
                         <span className="text-sm font-medium text-gray-700">Filter Your Search</span>
 
                         {/* Tag: Date Range */}
@@ -84,71 +84,76 @@ const StaffAssignedComplaint = ({ complaints, loading, onRefresh }) => {
                         </div>
                     </div>
 
-                    {/* Table Header - Better distributed columns */}
-                    <div className="flex items-center px-8 py-5 border-b border-gray-100 text-sm font-bold text-gray-900 bg-white">
-                        <div className="flex-[1.5]">Complaint No.</div>
-                        <div className="flex-[1.5]">Date</div>
-                        <div className="flex-[2]">Student</div>
-                        <div className="flex-[3]">Title</div>
-                        <div className="flex-[1.5] text-center">Status</div>
-                        <div className="flex-[1] text-right">Action</div>
-                    </div>
-
-                    {/* Table Body */}
-                    <div className="flex-grow relative overflow-auto bg-white">
-                        {loading ? (
-                            <div className="p-8 text-center text-gray-500">Loading...</div>
-                        ) : safeComplaints.length > 0 ? (
-                            safeComplaints.map((complaint) => (
-                                <div key={complaint.Complaint_ID} className="flex items-center px-8 py-5 border-b border-gray-50 text-sm hover:bg-gray-50 transition-colors">
-
-                                    {/* ID */}
-                                    <div className="flex-[1.5] font-medium text-gray-900">
-                                        #{complaint.Complaint_ID}
-                                    </div>
-
-                                    {/* Date */}
-                                    <div className="flex-[1.5] text-gray-500">
-                                        {complaint.Created_at ? new Date(complaint.Created_at).toLocaleDateString() : 'N/A'}
-                                    </div>
-
-                                    {/* Student Name */}
-                                    <div className="flex-[2] text-gray-700 font-medium truncate pr-4">
-                                        {complaint.student ? complaint.student.Name : 'Unknown'}
-                                    </div>
-
-                                    {/* Title */}
-                                    <div className="flex-[3] text-gray-500 truncate pr-4" title={complaint.Title}>
-                                        {complaint.Title}
-                                    </div>
-
-                                    {/* Status Badge */}
-                                    <div className="flex-[1.5] flex justify-center">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${complaint.Status === 'Resolved' ? 'bg-green-100 text-green-700' :
-                                            complaint.Status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
-                                                'bg-blue-100 text-blue-700'
-                                            }`}>
-                                            {complaint.Status}
-                                        </span>
-                                    </div>
-
-                                    {/* Action Button */}
-                                    <div className="flex-[1] flex justify-end">
-                                        <button
-                                            onClick={() => handleActionClick(complaint)}
-                                            className="text-gray-400 hover:text-orange-500 transition-colors"
-                                            title="Update Status"
-                                        >
-                                            <Eye size={18} />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="flex flex-col items-center justify-center h-full text-gray-300 pb-20">
-                                <p>No assigned complaints found.</p>
+                    {/* Table Container for Scroll */}
+                    <div className="overflow-x-auto">
+                        <div className="min-w-[900px]">
+                            {/* Table Header - Better distributed columns */}
+                            <div className="flex items-center px-8 py-5 border-b border-gray-100 text-sm font-bold text-gray-900 bg-white">
+                                <div className="flex-[1.5]">Complaint No.</div>
+                                <div className="flex-[1.5]">Date</div>
+                                <div className="flex-[2]">Student</div>
+                                <div className="flex-[3]">Title</div>
+                                <div className="flex-[1.5] text-center">Status</div>
+                                <div className="flex-[1] text-right">Action</div>
                             </div>
-                        )}
+
+                            {/* Table Body */}
+                            <div className="flex-grow relative bg-white">
+                                {loading ? (
+                                    <div className="p-8 text-center text-gray-500">Loading...</div>
+                                ) : safeComplaints.length > 0 ? (
+                                    safeComplaints.map((complaint) => (
+                                        <div key={complaint.Complaint_ID} className="flex items-center px-8 py-5 border-b border-gray-50 text-sm hover:bg-gray-50 transition-colors">
+
+                                            {/* ID */}
+                                            <div className="flex-[1.5] font-medium text-gray-900">
+                                                #{complaint.Complaint_ID}
+                                            </div>
+
+                                            {/* Date */}
+                                            <div className="flex-[1.5] text-gray-500">
+                                                {complaint.Created_at ? new Date(complaint.Created_at).toLocaleDateString() : 'N/A'}
+                                            </div>
+
+                                            {/* Student Name */}
+                                            <div className="flex-[2] text-gray-700 font-medium truncate pr-4">
+                                                {complaint.student ? complaint.student.Name : 'Unknown'}
+                                            </div>
+
+                                            {/* Title */}
+                                            <div className="flex-[3] text-gray-500 truncate pr-4" title={complaint.Title}>
+                                                {complaint.Title}
+                                            </div>
+
+                                            {/* Status Badge */}
+                                            <div className="flex-[1.5] flex justify-center">
+                                                <span className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${complaint.Status === 'Resolved' ? 'bg-green-100 text-green-700' :
+                                                    complaint.Status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                                                        'bg-blue-100 text-blue-700'
+                                                    }`}>
+                                                    {complaint.Status}
+                                                </span>
+                                            </div>
+
+                                            {/* Action Button */}
+                                            <div className="flex-[1] flex justify-end">
+                                                <button
+                                                    onClick={() => handleActionClick(complaint)}
+                                                    className="text-gray-400 hover:text-orange-500 transition-colors"
+                                                    title="Update Status"
+                                                >
+                                                    <Eye size={18} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center h-48 text-gray-300">
+                                        <p>No assigned complaints found.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     {/* Pagination Dot */}
@@ -160,8 +165,8 @@ const StaffAssignedComplaint = ({ complaints, loading, onRefresh }) => {
 
                 {/* Status Update Modal */}
                 {selectedComplaint && (
-                    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-                        <div className="bg-white p-6 rounded-lg w-96 shadow-xl">
+                    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-xl">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-lg font-bold">Update Status</h3>
                                 <button onClick={() => setSelectedComplaint(null)} className="text-gray-400 hover:text-gray-600">
@@ -194,8 +199,8 @@ const StaffAssignedComplaint = ({ complaints, loading, onRefresh }) => {
 
                 {/* Success Modal */}
                 {showSuccessModal && (
-                    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[60]">
-                        <div className="bg-white p-6 rounded-lg w-96 shadow-xl text-center transform transition-all scale-100">
+                    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[60] p-4">
+                        <div className="bg-white p-6 rounded-lg w-full max-w-sm shadow-xl text-center transform transition-all scale-100">
                             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                                 <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />

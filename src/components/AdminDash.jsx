@@ -80,26 +80,19 @@ const AdminDash = () => {
       {
         label: "Total",
         data: [
-          { x: 0, y: -80 },
-          { x: 1, y: 90 },
-          { x: 2, y: -100 },
-          { x: 2.5, y: -50 },
-          { x: 3, y: 5 },
-          { x: 3.5, y: -30 },
-          { x: 4, y: -20 },
-          { x: 5, y: 75 },
-          { x: 5.5, y: 40 },
-          { x: 6, y: 20 },
-          { x: 7, y: -10 },
-          { x: 8, y: -60 },
-          { x: 9, y: -80 },
+          { x: 0, y: 10 },
+          { x: 1, y: 25 },
+          { x: 2, y: 18 },
+          { x: 3, y: 30 },
+          { x: 4, y: 45 },
+          { x: 5, y: 35 },
+          { x: 6, y: 55 },
+          { x: 7, y: 40 },
+          { x: 8, y: 60 },
+          { x: 9, y: 50 },
           { x: 10, y: 75 },
-          { x: 10.5, y: 50 },
-          { x: 11, y: 75 },
-          { x: 12, y: 40 },
-          { x: 13, y: 0 },
-          { x: 14, y: -50 },
-          { x: 15, y: 85 },
+          { x: 11, y: 65 },
+          { x: 12, y: 85 },
         ],
         backgroundColor: "#4A90E2",
         pointRadius: 6,
@@ -112,24 +105,26 @@ const AdminDash = () => {
       x: {
         type: "linear",
         min: 0,
-        max: 16,
+        max: 12,
         ticks: {
           callback: function (value) {
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
-            const index = Math.floor(value / 2.3);
-            return months[index] || "";
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            return months[value] || "";
           },
-          stepSize: 2.3,
+          stepSize: 1,
+          font: {
+            size: 10 // Smaller font for mobile
+          }
         },
         grid: {
           display: false,
         },
       },
       y: {
-        min: -100,
+        min: 0,
         max: 100,
         ticks: {
-          stepSize: 50,
+          stepSize: 25,
         },
         grid: {
           color: "#f0f0f0",
@@ -138,12 +133,7 @@ const AdminDash = () => {
     },
     plugins: {
       legend: {
-        display: true,
-        position: "bottom",
-        labels: {
-          usePointStyle: true,
-          boxWidth: 10,
-        },
+        display: false, // Cleaner look
       },
     },
     maintainAspectRatio: false,
@@ -166,10 +156,11 @@ const AdminDash = () => {
     plugins: {
       legend: {
         display: true,
-        position: "right",
+        position: "bottom", // Bottom legend for better mobile stacking
         labels: {
           usePointStyle: true,
-          padding: 15,
+          padding: 20,
+          boxWidth: 10,
         },
       },
     },
@@ -178,7 +169,7 @@ const AdminDash = () => {
 
   // Pie Chart (Department)
   const pieData = {
-    labels: ["IT Dept", "Maintenance Dept", "Academic Affairs", "Security"],
+    labels: ["IT Dept", "Maintenance", "Academic", "Security"],
     datasets: [
       {
         data: stats.categoryCounts, // Use dynamic data
@@ -192,10 +183,10 @@ const AdminDash = () => {
     plugins: {
       legend: {
         display: true,
-        position: "right",
+        position: "bottom",
         labels: {
           usePointStyle: true,
-          padding: 10,
+          padding: 20,
         },
       },
     },
@@ -210,6 +201,7 @@ const AdminDash = () => {
         label: "Complaints",
         data: stats.categoryCounts, // Use dynamic data
         backgroundColor: "#2C3E89",
+        borderRadius: 4,
       },
     ],
   };
@@ -217,11 +209,7 @@ const AdminDash = () => {
   const barOptions = {
     scales: {
       y: {
-        min: -20, // Restored to match original design
-        // max: 100, // Remove max to allow scaling
-        ticks: {
-          stepSize: 20, // Restored step size
-        },
+        beginAtZero: true,
         grid: {
           color: "#f0f0f0",
         },
@@ -246,56 +234,58 @@ const AdminDash = () => {
 
 
       {/* Main Content */}
-      <main className="my-container mx-auto px-6 py-8">
-        <h2 className="text-3xl font-bold mb-8">Dashboard</h2>
+      <main className="my-container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-800">Dashboard</h2>
 
         {/* Top Row - Two Cards */}
-        <div className="grid grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
           {/* Total Complaints Scatter Chart */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-gray-500 text-sm uppercase mb-2">Total Complaints</p>
-                <h3 className="text-4xl font-bold">{stats.total}</h3>
-                <p className="text-gray-400 text-sm mt-1">Total Complaints Registered</p>
+                <p className="text-gray-500 text-xs sm:text-sm uppercase font-semibold tracking-wider mb-1">Total Complaints</p>
+                <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">{stats.total}</h3>
+                <p className="text-gray-400 text-xs sm:text-sm mt-1">Total Complaints Registered</p>
               </div>
-              <div className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs">
-                i
+              <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
               </div>
             </div>
-            <div className="h-64">
+            <div className="h-64 mt-4">
               <Scatter data={scatterData} options={scatterOptions} />
             </div>
           </div>
 
           {/* Status Doughnut Chart */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-gray-500 text-sm uppercase mb-2">Total Complaints</p>
-                <p className="text-gray-400 text-sm">Solved and Unsolved Complaints</p>
+                <p className="text-gray-500 text-xs sm:text-sm uppercase font-semibold tracking-wider mb-1">Complaint Status</p>
+                <p className="text-gray-400 text-xs sm:text-sm">Solved vs Unsolved vs In Progress</p>
               </div>
-              <div className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs">
-                i
+              <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
               </div>
             </div>
-            <div className="h-64 flex items-center justify-center">
+            <div className="h-64 flex items-center justify-center relative">
               <Doughnut data={doughnutData} options={doughnutOptions} />
+              {/* Optional: Center Text for Doughnut */}
+              {/* <div className="absolute inset-0 flex items-center justify-center text-sm text-gray-400 pointer-events-none mb-6">Status</div> */}
             </div>
           </div>
         </div>
 
         {/* Bottom Row - Two Cards */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Department Pie Chart */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-gray-500 text-sm uppercase mb-2">Complaints by Department</p>
-                <p className="text-gray-400 text-sm">Showing data of week</p>
+                <p className="text-gray-500 text-xs sm:text-sm uppercase font-semibold tracking-wider mb-1">By Department</p>
+                <p className="text-gray-400 text-xs sm:text-sm">Distribution across departments</p>
               </div>
-              <div className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs">
-                i
+              <div className="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center text-teal-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
               </div>
             </div>
             <div className="h-64 flex items-center justify-center">
@@ -304,14 +294,14 @@ const AdminDash = () => {
           </div>
 
           {/* Category Bar Chart */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-gray-500 text-sm uppercase mb-2">Complaint by Category</p>
-                <p className="text-gray-400 text-sm">Source of Complaint</p>
+                <p className="text-gray-500 text-xs sm:text-sm uppercase font-semibold tracking-wider mb-1">Volume by Dept</p>
+                <p className="text-gray-400 text-xs sm:text-sm">Complaint volume overview</p>
               </div>
-              <div className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs">
-                i
+              <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
               </div>
             </div>
             <div className="h-64">

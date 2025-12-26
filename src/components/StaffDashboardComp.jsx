@@ -11,19 +11,19 @@ const StaffDashboardComp = ({ user, complaints = [] }) => {
     const inProgressCount = complaints.filter(c => c.Status === 'In Progress').length;
 
     return (
-        <div className="bg-[#FFFDF7] min-h-screen p-8 font-sans text-gray-800">
+        <div className="bg-[#FFFDF7] min-h-screen p-4 sm:p-8 font-sans text-gray-800">
 
             {/* 1. Header: WELCOME NAME - DEPARTMENT */}
-            <div className="mb-10 mt-4 text-center">
-                <h1 className="text-2xl md:text-3xl font-normal text-gray-900 tracking-wide uppercase">
+            <div className="mb-8 sm:mb-10 mt-4 text-center">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-normal text-gray-900 tracking-wide uppercase">
                     Welcome {user ? user.Name : 'Staff'} - {user ? user.Department : 'Department'}
                 </h1>
             </div>
 
             {/* 2. Main Content: Single Large White Box */}
-            <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm p-10 min-h-[600px]">
+            <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm p-6 sm:p-10 min-h-[400px]">
 
-                <div className="space-y-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
                     {/* Stat 1: Complaints Solved */}
                     <StatItem
@@ -51,9 +51,9 @@ const StaffDashboardComp = ({ user, complaints = [] }) => {
 
                     {/* Stat 4: In Progress Complaints */}
                     <StatItem
-                        label="In Progress Complaints"
+                        label="In Progress"
                         count={inProgressCount}
-                        // Description was missing in the screenshot for the last item, so I omitted it or kept it minimal
+                        description="Total In Progress"
                         icon={<FilePlus size={28} className="text-orange-400" />}
                     />
 

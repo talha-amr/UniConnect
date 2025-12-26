@@ -18,7 +18,7 @@ const StudentSettings = ({ user, stats, onLogout }) => {
     };
 
     return (
-        <div className="min-h-screen bg-[#FFFDF7] p-8 font-sans text-gray-800">
+        <div className="min-h-screen bg-[#FFFDF7] p-4 sm:p-8 font-sans text-gray-800">
 
             {/* 1. Header */}
             <div className="mb-8">
