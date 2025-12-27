@@ -37,7 +37,13 @@ const createComplaint = async (req, res) => {
 const getMyComplaints = async (req, res) => {
     try {
         const complaints = await Complaint.findAll({
-            where: { Student_ID: req.user.id }
+            where: { Student_ID: req.user.id },
+            include: [
+                {
+                    model: Category,
+                    include: [{ model: CategoryName }]
+                }
+            ]
         });
         res.json(complaints);
     } catch (error) {

@@ -32,6 +32,13 @@ const AdminComplaint = () => {
     }
   };
 
+  // Sort complaints: Resolved last, then Newest first
+  const sortedComplaints = [...complaints].sort((a, b) => {
+    if (a.Status === 'Resolved' && b.Status !== 'Resolved') return 1;
+    if (a.Status !== 'Resolved' && b.Status === 'Resolved') return -1;
+    return new Date(b.Created_at) - new Date(a.Created_at);
+  });
+
   // Helper to safely get department name
   const getDeptName = (c) => {
     if (!c.Category) return null;
@@ -73,11 +80,12 @@ const AdminComplaint = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Desktop View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-600 min-w-[800px]">
             <thead className="bg-gray-50 text-gray-900 font-medium border-b border-gray-100">
               <tr>
-                <th className="px-6 py-4">ID</th>
+                <th className="px-6 py-4">Serial No</th>
                 <th className="px-6 py-4">Student</th>
                 <th className="px-6 py-4">Title</th>
                 <th className="px-6 py-4">Department</th>
@@ -86,11 +94,16 @@ const AdminComplaint = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {complaints.map((c) => (
+              {sortedComplaints.map((c, index) => (
                 <tr key={c.Complaint_ID} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">#{c.Complaint_ID}</td>
+                  <td className="px-6 py-4">#{index + 1}</td>
                   <td className="px-6 py-4">{c.student ? c.student.Name : 'N/A'}</td>
-                  <td className="px-6 py-4 font-medium text-gray-900">{c.Title}</td>
+                  <td
+                    className="px-6 py-4 font-medium text-gray-900 cursor-pointer hover:text-blue-600"
+                    onClick={() => handleViewClick(c)}
+                  >
+                    {c.Title}
+                  </td>
                   <td className="px-6 py-4">
                     {getDeptName(c) || <span className="text-gray-400 italic">Unassigned</span>}
                   </td>
@@ -120,6 +133,43 @@ const AdminComplaint = () => {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View (Cards) */}
+        <div className="md:hidden flex flex-col gap-4">
+          {sortedComplaints.map((c, index) => (
+            <div key={c.Complaint_ID} className="p-4 bg-white border border-gray-100 rounded-lg shadow-sm">
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-xs font-bold text-gray-500">#{index + 1}</span>
+                <span className={`px-2 py-1 rounded text-xs ${c.Status === 'Resolved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                  {c.Status}
+                </span>
+              </div>
+              <h3
+                className="font-bold text-gray-900 mb-1 cursor-pointer hover:text-blue-600"
+                onClick={() => handleViewClick(c)}
+              >
+                {c.Title}
+              </h3>
+              <p className="text-xs text-gray-500 mb-3">
+                {c.student ? c.student.Name : 'N/A'} • {getDeptName(c) || 'Unassigned'}
+              </p>
+              <div className="flex justify-end gap-4 border-t border-gray-50 pt-3">
+                <button
+                  onClick={() => handleAssignClick(c.Complaint_ID)}
+                  className="text-blue-500 text-sm font-medium flex items-center gap-1"
+                >
+                  <UserPlus size={14} /> {getDeptName(c) ? 'Re-assign' : 'Assign'}
+                </button>
+                <button
+                  onClick={() => handleViewClick(c)}
+                  className="text-gray-500 text-sm font-medium flex items-center gap-1"
+                >
+                  <Eye size={14} /> View
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -156,7 +206,7 @@ const AdminComplaint = () => {
             <div className="flex justify-between items-start mb-6 border-b pb-4">
               <div>
                 <h3 className="text-2xl font-bold text-gray-800">Complaint Details</h3>
-                <span className="text-sm text-gray-500">#{selectedComplaint.Complaint_ID}</span>
+                <span className="text-sm text-gray-500">Serial No: #{sortedComplaints.indexOf(selectedComplaint) + 1}</span>
               </div>
               <button onClick={() => setShowViewModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X size={24} />

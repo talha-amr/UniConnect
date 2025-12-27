@@ -54,7 +54,7 @@ export default function Navbar({ theme = "blue" }) {
 
       {/* Mobile Full Screen Menu Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-[60] bg-white flex flex-col p-6 animate-slide-in-right">
+        <div className="fixed inset-0 z-50 bg-white flex flex-col p-6 animate-slide-in-right">
 
           {/* Header with Close Button */}
           <div className="flex justify-between items-center mb-10">

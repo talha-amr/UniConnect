@@ -111,7 +111,7 @@ const Register = () => {
             <h3 className="text-lg font-semibold text-[#1A2641] mb-4 text-center">
               Select Account Type
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button
                 onClick={() => setUserType('student')}
                 className={`py-4 px-6 rounded-lg font-semibold transition-all duration-200 ${userType === 'student'

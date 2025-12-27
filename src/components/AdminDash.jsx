@@ -234,7 +234,7 @@ const AdminDash = () => {
 
 
       {/* Main Content */}
-      <main className="my-container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className="my-container mx-auto py-6 sm:py-8">
         <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-800">Dashboard</h2>
 
         {/* Top Row - Two Cards */}

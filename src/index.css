@@ -10,13 +10,14 @@
 }
 
 .my-container {
-  @apply   px-4 sm:px-6 lg:px-[3vw] w-full;
+  @apply px-4 md:px-8 w-full;
 }
 
 @keyframes slideInRight {
   from {
     transform: translateX(100%);
   }
+
   to {
     transform: translateX(0);
   }

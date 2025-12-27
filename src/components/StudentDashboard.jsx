@@ -28,7 +28,7 @@ const DashboardHome = ({ user, complaints = [] }) => {
     };
 
     return (
-        <div className="bg-[#FFFDF7] min-h-screen p-8 font-sans text-gray-800">
+        <div className="bg-[#FFFDF7] min-h-screen p-4 md:p-8 font-sans text-gray-800">
 
             {/* Welcome Header */}
             <div className="mb-8 sm:mb-12 mt-4 text-center">

@@ -40,7 +40,7 @@ const Hero = () => {
         </div>
 
         {/* Feature Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 px-4 md:px-0">
           {/* Easy Submission */}
           <div className="bg-[#FFFFFF] rounded-2xl p-6 text-center space-y-4 shadow-sm hover:shadow-md transition-shadow">
             <div className="w-16 h-16 bg-[#1A2641] rounded-full mx-auto flex items-center justify-center">

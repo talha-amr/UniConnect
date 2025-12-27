@@ -11,7 +11,7 @@ const StaffDashboardComp = ({ user, complaints = [] }) => {
     const inProgressCount = complaints.filter(c => c.Status === 'In Progress').length;
 
     return (
-        <div className="bg-[#FFFDF7] min-h-screen p-4 sm:p-8 font-sans text-gray-800">
+        <div className="bg-[#FFFDF7] min-h-screen p-4 md:p-8 font-sans text-gray-800">
 
             {/* 1. Header: WELCOME NAME - DEPARTMENT */}
             <div className="mb-8 sm:mb-10 mt-4 text-center">
@@ -23,7 +23,7 @@ const StaffDashboardComp = ({ user, complaints = [] }) => {
             {/* 2. Main Content: Single Large White Box */}
             <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm p-6 sm:p-10 min-h-[400px]">
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="flex flex-col gap-8">
 
                     {/* Stat 1: Complaints Solved */}
                     <StatItem
