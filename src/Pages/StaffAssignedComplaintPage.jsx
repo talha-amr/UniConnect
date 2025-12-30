@@ -11,7 +11,8 @@ const StaffAssignedComplaintPage = () => {
         setLoading(true);
         try {
             const res = await api.get('/complaints/assigned');
-            setComplaints(res.data);
+            const uniqueComplaints = Array.from(new Map(res.data.map(item => [item.Complaint_ID, item])).values());
+            setComplaints(uniqueComplaints);
         } catch (error) {
             console.error("Failed to fetch assigned complaints", error);
         } finally {

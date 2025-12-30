@@ -23,7 +23,8 @@ const AdminComplaint = () => {
         api.get('/complaints'), // Admin fetches all
         api.get('/complaints/categories') // Fetch departments/categories
       ]);
-      setComplaints(complaintsRes.data);
+      const uniqueComplaints = Array.from(new Map(complaintsRes.data.map(item => [item.Complaint_ID, item])).values());
+      setComplaints(uniqueComplaints);
       setStaffList(categoriesRes.data);
     } catch (error) {
       console.error("Failed to fetch data", error);

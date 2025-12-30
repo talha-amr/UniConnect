@@ -6,6 +6,11 @@ import ComplaintModal from './ComplaintModal'; // 1. Import the modal
 const StudentComplaints = () => {
     const [selectedComplaint, setSelectedComplaint] = useState(null);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [complaints, setComplaints] = useState([]);
+    const [filteredComplaints, setFilteredComplaints] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     // Helpers
     const getSerialNo = (index) => index + 1;
@@ -22,8 +27,10 @@ const StudentComplaints = () => {
     const fetchComplaints = async () => {
         try {
             const res = await api.get('/complaints/my');
-            setComplaints(res.data);
-            setFilteredComplaints(res.data);
+            // Deduplicate complaints by Complaint_ID just in case
+            const uniqueComplaints = Array.from(new Map(res.data.map(item => [item.Complaint_ID, item])).values());
+            setComplaints(uniqueComplaints);
+            setFilteredComplaints(uniqueComplaints);
         } catch (error) {
             console.error('Failed to fetch complaints', error);
         }
