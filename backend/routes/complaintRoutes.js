@@ -12,6 +12,9 @@ const {
     getCategories
 } = require('../controllers/complaintController');
 
+// Public
+router.get('/categories', getCategories);
+
 // All routes here are protected
 router.use(protect);
 
@@ -26,7 +29,6 @@ router.patch('/:id/status', authorize('staff'), updateComplaintStatus);
 // Admin
 router.get('/', authorize('admin'), getAllComplaints);
 router.post('/assign/:complaintId', authorize('admin'), assignComplaint);
-router.get('/categories', getCategories);
 
 // Shared/Public-ish (within auth)
 router.get('/:id', async (req, res) => {

@@ -107,7 +107,7 @@ const StaffAssignedComplaint = ({ complaints, loading, onRefresh }) => {
                                                     {complaint.Created_at ? new Date(complaint.Created_at).toLocaleDateString() : 'N/A'}
                                                 </div>
                                                 <div className="flex-[2] text-gray-700 font-medium truncate pr-4">
-                                                    {complaint.student ? complaint.student.Name : 'Unknown'}
+                                                    {complaint.Is_anonymous ? <span className="text-gray-500 italic">Anonymous</span> : (complaint.student ? complaint.student.Name : 'Unknown')}
                                                 </div>
                                                 <div
                                                     className="flex-[3] text-gray-500 truncate pr-4 cursor-pointer hover:text-blue-600"
@@ -173,7 +173,7 @@ const StaffAssignedComplaint = ({ complaints, loading, onRefresh }) => {
                                             {complaint.Title}
                                         </h3>
                                         <p className="text-xs text-gray-500 mb-2">
-                                            {complaint.student ? complaint.student.Name : 'Unknown'} • {complaint.Created_at ? new Date(complaint.Created_at).toLocaleDateString() : 'N/A'}
+                                            {complaint.Is_anonymous ? 'Anonymous' : (complaint.student ? complaint.student.Name : 'Unknown')} • {complaint.Created_at ? new Date(complaint.Created_at).toLocaleDateString() : 'N/A'}
                                         </p>
                                         <button
                                             onClick={() => handleActionClick(complaint)}
@@ -215,7 +215,9 @@ const StaffAssignedComplaint = ({ complaints, loading, onRefresh }) => {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="text-xs text-gray-500 uppercase font-semibold">Student</label>
-                                        <p className="text-gray-900">{selectedComplaint.student ? selectedComplaint.student.Name : 'Unknown'}</p>
+                                        <p className="text-gray-900">
+                                            {selectedComplaint.Is_anonymous ? 'Anonymous' : (selectedComplaint.student ? selectedComplaint.student.Name : 'Unknown')}
+                                        </p>
                                     </div>
                                     <div>
                                         <label className="text-xs text-gray-500 uppercase font-semibold">Date</label>

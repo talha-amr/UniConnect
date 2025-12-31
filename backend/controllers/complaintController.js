@@ -54,11 +54,29 @@ const getMyComplaints = async (req, res) => {
 // @desc    Get all complaints (or filter by role)
 // @route   GET /api/complaints
 // @access  Admin, Staff (assigned)
+// @desc    Get all complaints (or filter by role)
+// @route   GET /api/complaints
+// @access  Admin, Staff (assigned)
 const getAllComplaints = async (req, res) => {
     try {
+        const userEmail = req.user.Email || req.user.email;
+        if (!userEmail) return res.status(401).json({ message: 'Unauthorized' });
+
+        const domain = userEmail.split('@')[1];
+
+        // Filter: Only show complaints where the Student's email matches the Admin's domain
         let options = {
             include: [
-                { model: Student, as: 'student', attributes: ['Student_ID', 'Name', 'Email'] },
+                {
+                    model: Student,
+                    as: 'student',
+                    attributes: ['Student_ID', 'Name', 'Email'],
+                    where: {
+                        Email: {
+                            [require('sequelize').Op.like]: `%@${domain}`
+                        }
+                    }
+                },
                 {
                     model: Category,
                     include: [{ model: CategoryName }]
@@ -67,11 +85,8 @@ const getAllComplaints = async (req, res) => {
         };
 
         if (req.user.role === 'staff') {
-            // Staff should ideally see complaints assigned to their department or them personally
-            // For now, let's implement "View Assigned" logic if needed, 
-            // but usually staff might see open pool. Let's strictly follow prompt: "View complaints assigned to their department"
-            // For this MVP, we'll assume granular assignment to Staff ID for simplicity as per schema 'complaint_assignments'
-            // OR checks associations.
+            // Staff also technically belong to a domain, so this same logic works for "All Complaints" view if they have it
+            // ensuring they don't see another university's data.
         }
 
         const complaints = await Complaint.findAll(options);
@@ -104,10 +119,23 @@ const getAssignedComplaints = async (req, res) => {
             return res.json([]); // No category matches this department
         }
 
+        const userEmail = req.user.Email || req.user.email;
+        const domain = userEmail.split('@')[1];
+
+
         const complaints = await Complaint.findAll({
             where: { Category_ID: catNameEntry.Category_ID },
             include: [
-                { model: Student, as: 'student', attributes: ['Student_ID', 'Name', 'Email'] },
+                {
+                    model: Student,
+                    as: 'student',
+                    attributes: ['Student_ID', 'Name', 'Email'],
+                    where: {
+                        Email: {
+                            [require('sequelize').Op.like]: `%@${domain}`
+                        }
+                    }
+                },
                 {
                     model: Category,
                     include: [{ model: CategoryName, attributes: ['Category_name'] }]
@@ -115,9 +143,9 @@ const getAssignedComplaints = async (req, res) => {
             ]
         });
 
+
         res.json(complaints);
     } catch (error) {
-        console.error("Error fetching assigned complaints:", error);
         res.status(500).json({ message: error.message });
     }
 };

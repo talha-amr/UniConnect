@@ -57,9 +57,12 @@ const StudentComplaints = () => {
 
     const handleLodgeComplaint = async (formData) => {
         try {
+            // Artificial delay to show spinner
+            await new Promise(resolve => setTimeout(resolve, 1000));
             await api.post('/complaints', formData);
-            setShowSuccessModal(true); // Show success modal instead of alert
-            fetchComplaints();
+            // Refresh logic - wait for fetch to complete so UI is up to date when success modal closes
+            await fetchComplaints();
+            setShowSuccessModal(true);
         } catch (error) {
             console.error("Failed to submit complaint", error);
             alert("Failed to submit complaint. Please try again.");
@@ -222,6 +225,7 @@ const StudentComplaints = () => {
 
             {/* 5. Render the Lodge Complaint Modal */}
             <ComplaintModal
+                key={isModalOpen ? 'open' : 'closed'} // Force fresh instance on open
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleLodgeComplaint}

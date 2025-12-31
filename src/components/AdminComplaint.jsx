@@ -98,7 +98,9 @@ const AdminComplaint = () => {
               {sortedComplaints.map((c, index) => (
                 <tr key={c.Complaint_ID} className="hover:bg-gray-50">
                   <td className="px-6 py-4">#{index + 1}</td>
-                  <td className="px-6 py-4">{c.student ? c.student.Name : 'N/A'}</td>
+                  <td className="px-6 py-4">
+                    {c.Is_anonymous ? <span className="text-gray-500 italic">Anonymous</span> : (c.student ? c.student.Name : 'N/A')}
+                  </td>
                   <td
                     className="px-6 py-4 font-medium text-gray-900 cursor-pointer hover:text-blue-600"
                     onClick={() => handleViewClick(c)}
@@ -153,7 +155,7 @@ const AdminComplaint = () => {
                 {c.Title}
               </h3>
               <p className="text-xs text-gray-500 mb-3">
-                {c.student ? c.student.Name : 'N/A'} • {getDeptName(c) || 'Unassigned'}
+                {c.Is_anonymous ? 'Anonymous' : (c.student ? c.student.Name : 'N/A')} • {getDeptName(c) || 'Unassigned'}
               </p>
               <div className="flex justify-end gap-4 border-t border-gray-50 pt-3">
                 <button
@@ -217,11 +219,15 @@ const AdminComplaint = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-500">Student Name</label>
-                <p className="text-gray-900 font-medium">{selectedComplaint.student?.Name || 'N/A'}</p>
+                <p className="text-gray-900 font-medium">
+                  {selectedComplaint.Is_anonymous ? 'Anonymous' : (selectedComplaint.student?.Name || 'N/A')}
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Student Email</label>
-                <p className="text-gray-900">{selectedComplaint.student?.Email || 'N/A'}</p>
+                <p className="text-gray-900">
+                  {selectedComplaint.Is_anonymous ? 'Hidden' : (selectedComplaint.student?.Email || 'N/A')}
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Department</label>

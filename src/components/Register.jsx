@@ -5,6 +5,7 @@ import api from '../api/axios';
 const Register = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState('student'); // student, staff, admin
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,20 +15,27 @@ const Register = () => {
     agreeToTerms: false
   });
 
-  const departments = [
-    'Computer Science',
-    'Engineering',
-    'Business Administration',
-    'Mathematics',
-    'Physics',
-    'Chemistry',
-    'Biology',
-    'Literature',
-    'History',
-    'Economics',
-    'Psychology',
-    'Other'
+  const [staffCategories, setStaffCategories] = useState([]);
+
+  const academicDepartments = [
+    'Computer Science', 'Software Engineering', 'IT', 'Data Science',
+    'Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering',
+    'Business Administration', 'Economics', 'Accounting',
+    'Mathematics', 'Physics', 'Chemistry', 'Biology',
+    'English Literature', 'History', 'Psychology', 'Law', 'Other'
   ];
+
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get('/complaints/categories');
+        setStaffCategories(response.data.map(c => c.name));
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -88,7 +96,7 @@ const Register = () => {
     } catch (err) {
       console.error('Registration failed:', err);
       // You might want to set an error state here to display to the user
-      alert(err.response?.data?.message || 'Registration failed');
+      setError(err.response?.data?.message || 'Registration failed');
     }
   };
 
@@ -201,7 +209,7 @@ const Register = () => {
               {userType !== 'admin' && (
                 <div>
                   <label htmlFor="department" className="block text-sm font-semibold text-[#1A2641] mb-2">
-                    Department
+                    {userType === 'staff' ? 'Functional Department (Assigned Tasks)' : 'Academic Department'}
                   </label>
                   <select
                     id="department"
@@ -212,11 +220,19 @@ const Register = () => {
                     required
                   >
                     <option value="">Select your department</option>
-                    {departments.map((dept) => (
-                      <option key={dept} value={dept}>
-                        {dept}
-                      </option>
-                    ))}
+                    {userType === 'student' ? (
+                      academicDepartments.map((dept) => (
+                        <option key={dept} value={dept}>
+                          {dept}
+                        </option>
+                      ))
+                    ) : (
+                      staffCategories.map((catName) => (
+                        <option key={catName} value={catName}>
+                          {catName}
+                        </option>
+                      ))
+                    )}
                   </select>
                 </div>
               )}
@@ -307,6 +323,29 @@ const Register = () => {
           </div>
         </div>
       </div>
+
+      {/* Error Modal */}
+      {error && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100 animate-slideIn">
+            <div className="bg-red-500 p-4 flex items-center justify-center">
+              <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div className="p-6 text-center">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">Registration Failed</h3>
+              <p className="text-gray-600 mb-6">{error}</p>
+              <button
+                onClick={() => setError('')}
+                className="w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-xl hover:bg-red-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

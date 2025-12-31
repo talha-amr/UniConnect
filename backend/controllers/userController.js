@@ -3,10 +3,24 @@ const { Student, Staff } = require('../models');
 // @desc    Get all users (Students & Staff)
 // @route   GET /api/users
 // @access  Admin
+// @desc    Get all users (Students & Staff)
+// @route   GET /api/users
+// @access  Admin
 const getAllUsers = async (req, res) => {
     try {
-        const students = await Student.findAll();
-        const staff = await Staff.findAll();
+        // Domain Filtering: Only show users from the same domain as the Admin
+        const adminEmail = req.user.Email || req.user.email; // Middleware must populate this
+        if (!adminEmail) return res.status(401).json({ message: 'Unauthorized' });
+
+        const domain = adminEmail.split('@')[1];
+        const domainFilter = {
+            Email: {
+                [require('sequelize').Op.like]: `%@${domain}`
+            }
+        };
+
+        const students = await Student.findAll({ where: domainFilter });
+        const staff = await Staff.findAll({ where: domainFilter });
 
         const formattedStudents = students.map(user => ({
             id: user.Student_ID,

@@ -3,7 +3,7 @@ import { FolderPlus, FilePlus, FileText, Folder } from 'lucide-react';
 import ComplaintModal from './ComplaintModal';
 import api from '../api/axios';
 
-const DashboardHome = ({ user, complaints = [] }) => {
+const DashboardHome = ({ user, complaints = [], onRefresh }) => {
     // 2. State to manage modal visibility
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -17,10 +17,10 @@ const DashboardHome = ({ user, complaints = [] }) => {
     // 3. Handle data coming back from the modal
     const handleComplaintSubmit = async (formData) => {
         try {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Spinner visibility delay
             await api.post('/complaints', formData);
+            if (onRefresh) await onRefresh(); // Refresh stats instantly
             setShowSuccessModal(true); // Show success modal instead of alert
-            // Optionally trigger a refresh here if stats need to update immediately, 
-            // causing a re-fetch or parent refresh. For now, alert is sufficient.
         } catch (error) {
             console.error("Failed to submit complaint", error);
             alert("Failed to submit complaint. Please try again.");
@@ -90,6 +90,7 @@ const DashboardHome = ({ user, complaints = [] }) => {
 
             {/* 5. Render the Modal */}
             <ComplaintModal
+                key={isModalOpen ? 'open' : 'closed'}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleComplaintSubmit}
@@ -109,10 +110,7 @@ const DashboardHome = ({ user, complaints = [] }) => {
                             Your complaint has been successfully lodged.
                         </p>
                         <button
-                            onClick={() => {
-                                setShowSuccessModal(false);
-                                window.location.reload(); // Refresh to update stats
-                            }}
+                            onClick={() => setShowSuccessModal(false)}
                             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:text-sm"
                         >
                             OK

@@ -16,13 +16,35 @@ const registerUser = async (req, res) => {
     const { name, email, password, role, department } = req.body;
     let Model;
 
+    // Determine Role Model
     if (role === 'admin') Model = Admin;
     else if (role === 'staff') Model = Staff;
     else Model = Student; // Default to Student
 
     try {
-        // Check if user exists in the specific table
-        // Note: Ideally check all tables to ensure unique email across system if required
+        // 1. Domain Validation Logic (for Staff and Students)
+        // Ensure the university (Admin) exists for this email domain
+        const emailDomain = email.split('@')[1];
+        if (!emailDomain) {
+            return res.status(400).json({ message: 'Invalid email format' });
+        }
+
+        // If not registering as Admin, check if an Admin exists for this domain
+        if (role !== 'admin') {
+            const adminExists = await Admin.findOne({
+                where: {
+                    Email: {
+                        [require('sequelize').Op.like]: `%@${emailDomain}`
+                    }
+                }
+            });
+
+            if (!adminExists) {
+                return res.status(400).json({ message: 'University not registered. Contact your administrator.' });
+            }
+        }
+
+        // 2. Check if user exists in the specific table
         const userExists = await Model.findOne({ where: { Email: email } });
 
         if (userExists) {

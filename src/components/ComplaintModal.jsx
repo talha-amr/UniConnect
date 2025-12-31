@@ -37,8 +37,12 @@ const ComplaintModal = ({ isOpen, onClose, onSubmit }) => {
         setFormData(prev => ({ ...prev, isAnonymous: !prev.isAnonymous }));
     };
 
-    const handleSubmit = (e) => {
+    const [isLocalSubmitting, setIsLocalSubmitting] = useState(false);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLocalSubmitting(true);
+
         // This object matches your Schema structure for the API call
         const complaintPayload = {
             Title: formData.title,
@@ -49,8 +53,14 @@ const ComplaintModal = ({ isOpen, onClose, onSubmit }) => {
             // Student_ID: user.id (You would typically inject the logged-in ID here)
         };
 
-        onSubmit(complaintPayload);
-        onClose(); // Close modal after submit
+        try {
+            await onSubmit(complaintPayload);
+        } catch (error) {
+            console.error("Submission error:", error);
+        } finally {
+            setIsLocalSubmitting(false);
+            onClose(); // Close modal after submit
+        }
     };
 
     return (
@@ -78,7 +88,8 @@ const ComplaintModal = ({ isOpen, onClose, onSubmit }) => {
                             placeholder="e.g., Projector not working in Lab 4"
                             value={formData.title}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none transition-all"
+                            disabled={isLocalSubmitting}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none transition-all disabled:opacity-50"
                         />
                     </div>
 
@@ -90,7 +101,8 @@ const ComplaintModal = ({ isOpen, onClose, onSubmit }) => {
                             required
                             value={formData.categoryId}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none bg-white"
+                            disabled={isLocalSubmitting}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none bg-white disabled:opacity-50"
                         >
                             <option value="" disabled>Select a category</option>
                             {categories.map((cat) => (
@@ -111,14 +123,15 @@ const ComplaintModal = ({ isOpen, onClose, onSubmit }) => {
                             placeholder="Describe the issue in detail..."
                             value={formData.description}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none resize-none transition-all"
+                            disabled={isLocalSubmitting}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none resize-none transition-all disabled:opacity-50"
                         ></textarea>
                     </div>
 
                     {/* Anonymous Toggle */}
                     <div
-                        onClick={toggleAnonymous}
-                        className="flex items-center gap-3 cursor-pointer p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                        onClick={!isLocalSubmitting ? toggleAnonymous : undefined}
+                        className={`flex items-center gap-3 cursor-pointer p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors ${isLocalSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         <div className={`text-${formData.isAnonymous ? 'orange-500' : 'gray-400'}`}>
                             {formData.isAnonymous ? <CheckSquare size={20} /> : <Square size={20} />}
@@ -134,15 +147,27 @@ const ComplaintModal = ({ isOpen, onClose, onSubmit }) => {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                            disabled={isLocalSubmitting}
+                            className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="flex-1 px-4 py-2.5 bg-orange-400 text-white font-medium rounded-lg hover:bg-orange-500 shadow-sm transition-colors"
+                            disabled={isLocalSubmitting}
+                            className="flex-1 px-4 py-2.5 bg-orange-400 text-white font-medium rounded-lg hover:bg-orange-500 shadow-sm transition-colors disabled:opacity-70 flex justify-center items-center gap-2"
                         >
-                            Submit Complaint
+                            {isLocalSubmitting ? (
+                                <>
+                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Submitting...
+                                </>
+                            ) : (
+                                'Submit Complaint'
+                            )}
                         </button>
                     </div>
 

@@ -8,25 +8,30 @@ const StudentDashboardPage = () => {
     const [complaints, setComplaints] = useState([]);
     const [user, setUser] = useState(null);
 
+    const fetchData = async () => {
+        try {
+            const [complaintsRes, userRes] = await Promise.all([
+                api.get('/complaints/my'),
+                api.get('/auth/me')
+            ]);
+            setComplaints(complaintsRes.data);
+            setUser(userRes.data);
+        } catch (error) {
+            console.error('Failed to fetch data', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [complaintsRes, userRes] = await Promise.all([
-                    api.get('/complaints/my'),
-                    api.get('/auth/me')
-                ]);
-                setComplaints(complaintsRes.data);
-                setUser(userRes.data);
-            } catch (error) {
-                console.error('Failed to fetch data', error);
-            }
-        };
         fetchData();
     }, []);
 
     return (
         <SlideNavbar>
-            <StudentDashboard complaints={complaints} user={user} />
+            <StudentDashboard
+                complaints={complaints}
+                user={user}
+                onRefresh={fetchData}
+            />
         </SlideNavbar>
     );
 };
